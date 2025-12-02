@@ -1,10 +1,10 @@
 from sys import argv
-from time import time
+from time import perf_counter
 
-start = time()
+start = perf_counter()
 
 with open(argv[1], encoding="ascii") as file:
-    input = [(line[:1], int(line[1:])) for line in file]
+    input = [(line[0], int(line[1:])) for line in file]
 
 pos = 50
 max = 100
@@ -14,10 +14,10 @@ prev = "R"
 
 for dir, diff in input:
     if dir != prev:
-        pos = (max - pos) % max
+        pos = 0 if pos == 0 else max - pos
 
-    passes += int((pos + diff) / max)
-    pos = (pos + diff) % max
+    incr, pos = divmod(pos + diff, max)
+    passes += incr
 
     prev = dir
 
@@ -27,5 +27,5 @@ for dir, diff in input:
 print("stops", stops)
 print("passes", passes)
 
-exec_time = (time() - start) * 1000
+exec_time = (perf_counter() - start) * 1000
 print(f"{exec_time:.1f}ms")

@@ -1,7 +1,7 @@
 from sys import argv
-from time import time
+from time import perf_counter
 
-start = time()
+start = perf_counter()
 
 with open(argv[1], encoding="ascii") as file:
     input = [
@@ -14,16 +14,16 @@ sum2 = 0
 for min, max in input:
     found_ids: set[int] = set()
     for num_len in range(len(str(min)), len(str(max)) + 1):
-        for chunk_len in range(1, int(num_len / 2) + 1):
-            if num_len % chunk_len > 0:
+        for chunk_len in range(1, num_len // 2 + 1):
+            n_chunks, remainder = divmod(num_len, chunk_len)
+            if remainder > 0:
                 continue
-            num_chunks = int(num_len / chunk_len)
-            chunk_start = int("1" + "0" * (chunk_len - 1))
-            chunk_end = int("9" * chunk_len)
+            chunk_start = 10 ** (chunk_len - 1)
+            chunk_end = 10**chunk_len - 1
             for chunk in range(chunk_start, chunk_end + 1):
-                id = int(str(chunk) * num_chunks)
+                id = int(str(chunk) * n_chunks)
                 if min <= id <= max:
-                    if num_chunks == 2:
+                    if n_chunks == 2:
                         sum1 += id
                     if id not in found_ids:
                         sum2 += id
@@ -31,5 +31,5 @@ for min, max in input:
 
 print(sum1, sum2)
 
-exec_time = (time() - start) * 1000
+exec_time = (perf_counter() - start) * 1000
 print(f"{exec_time:.1f}ms")
