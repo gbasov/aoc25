@@ -12,7 +12,7 @@ sum1 = 0
 sum2 = 0
 
 for min, max in input:
-    found_ids = set()
+    found_ids: set[int] = set()
     for num_len in range(len(str(min)), len(str(max)) + 1):
         for chunk_len in range(1, int(num_len / 2) + 1):
             if num_len % chunk_len > 0:
